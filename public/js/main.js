@@ -46,6 +46,8 @@
 
 	"use strict";
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -187,11 +189,12 @@
 	        value: function componentWillMount() {
 	            var _this = this;
 	            $.ajax({
-	                url: '/api.php?action=category',
+	                url: '/categorys',
 	                datatype: "json",
 	                async: false,
 	                type: 'get',
 	                success: function success(data) {
+	                    console.log(data);
 	                    _this.setState({ value: data });
 	                }
 	            });
@@ -245,42 +248,20 @@
 	        value: function fetchArticle(category_id) {
 	            var _this = this;
 	            $.ajax({
-	                url: '/api.php?action=article&category_id=' + category_id,
+	                url: '/articles/' + category_id,
 	                datatype: "json",
 	                async: false,
 	                type: 'get',
 	                success: function success(data) {
-	                    var items = [],
-	                        keys = Object.keys(data);
-	                    var _iteratorNormalCompletion = true;
-	                    var _didIteratorError = false;
-	                    var _iteratorError = undefined;
-
-	                    try {
-	                        for (var _iterator = keys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	                            var i = _step.value;
-
-	                            items.push(React.createElement(
-	                                "li",
-	                                { "data-key": i, onClick: _this.articleChange.bind(_this) },
-	                                data[i]['title']
-	                            ));
-	                        }
-	                    } catch (err) {
-	                        _didIteratorError = true;
-	                        _iteratorError = err;
-	                    } finally {
-	                        try {
-	                            if (!_iteratorNormalCompletion && _iterator.return) {
-	                                _iterator.return();
-	                            }
-	                        } finally {
-	                            if (_didIteratorError) {
-	                                throw _iteratorError;
-	                            }
-	                        }
-	                    }
-
+	                    var items = [];
+	                    console.log(typeof data === "undefined" ? "undefined" : _typeof(data));
+	                    data.forEach(function (value) {
+	                        items.push(React.createElement(
+	                            "li",
+	                            { "data-key": value['key'], onClick: _this.articleChange.bind(_this) },
+	                            value['title']
+	                        ));
+	                    });
 	                    _this.setState({ article: items.sort(function (a, b) {
 	                            return b - a;
 	                        }) });

@@ -88,11 +88,12 @@ class Category extends React.Component {
     componentWillMount() {
         var _this = this;
         $.ajax({
-            url: '/api.php?action=category',
+            url: '/categorys',
             datatype: "json",
             async: false,
             type: 'get',
             success: function (data) {
+                console.log(data);
                 _this.setState({value: data});
             }
         });
@@ -140,16 +141,16 @@ class Category extends React.Component {
     fetchArticle(category_id) {
         var _this = this;
         $.ajax({
-            url: '/api.php?action=article&category_id=' + category_id,
+            url: '/articles/' + category_id,
             datatype: "json",
             async: false,
             type: 'get',
             success: function (data) {
-                var items = [],
-                    keys = Object.keys(data);
-                for (var i of  keys) {
-                    items.push(<li data-key={i} onClick={_this.articleChange.bind(_this)}>{data[i]['title']}</li>);
-                }
+                var items = [];
+                console.log(typeof data);
+                data.forEach(function(value) {
+                    items.push(<li data-key={value['key']} onClick={_this.articleChange.bind(_this)}>{value['title']}</li>);
+                });
                 _this.setState({article: items.sort(function(a, b) {
                     return b - a;
                 })});
