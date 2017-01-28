@@ -93,7 +93,6 @@ class Category extends React.Component {
             async: false,
             type: 'get',
             success: function (data) {
-                console.log(data);
                 _this.setState({value: data});
             }
         });
@@ -141,7 +140,7 @@ class Category extends React.Component {
     fetchArticle(category_id) {
         var _this = this;
         $.ajax({
-            url: '/articles/' + category_id,
+            url: '/categorys/' + category_id + '/articles',
             datatype: "json",
             async: false,
             type: 'get',

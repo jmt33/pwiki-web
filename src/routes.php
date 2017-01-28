@@ -13,11 +13,16 @@ $app->get('/', function ($request, $response, $args) {
 //获取分类
 $app->get('/categorys', function($request, $response, $args) {
     $controller = new Category($this);
-    return $controller->actionGet($request, $response, $args);
+    return $controller->actionCategory($request, $response, $args);
 });
 
 //获取文章
-$app->get('/articles[/{categoryId}]', function($request, $response, $args) {
+$app->get('/categorys/{categoryId}/articles', function($request, $response, $args) {
+    $controller = new Category($this);
+    return $controller->actionArticle($request, $response, $args);
+});
+
+$app->get('/articles/{artilceId}', function($request, $response, $args) {
     $controller = new Article($this);
     return $controller->actionGet($request, $response, $args);
 });

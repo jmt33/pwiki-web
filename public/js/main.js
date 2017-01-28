@@ -194,7 +194,6 @@
 	                async: false,
 	                type: 'get',
 	                success: function success(data) {
-	                    console.log(data);
 	                    _this.setState({ value: data });
 	                }
 	            });
@@ -248,7 +247,7 @@
 	        value: function fetchArticle(category_id) {
 	            var _this = this;
 	            $.ajax({
-	                url: '/articles/' + category_id,
+	                url: '/categorys/' + category_id + '/articles',
 	                datatype: "json",
 	                async: false,
 	                type: 'get',
