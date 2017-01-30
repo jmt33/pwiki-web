@@ -22,7 +22,7 @@ $app->get('/categorys/{categoryId}/articles', function($request, $response, $arg
     return $controller->actionArticle($request, $response, $args);
 });
 
-$app->get('/articles/{artilceId}', function($request, $response, $args) {
+$app->get('/articles/{articleId}', function($request, $response, $args) {
     $controller = new Article($this);
     return $controller->actionGet($request, $response, $args);
 });

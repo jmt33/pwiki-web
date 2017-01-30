@@ -232,10 +232,10 @@
 	                _this = this;
 	            $(event.target).addClass('active').siblings('li').removeClass('active');
 	            if (value != 0) {
-	                $.get('/api.php?action=markdown&key=' + value, function (data) {
-	                    $('#markdown').val(data.content);
+	                $.get('/articles/' + value, function (data) {
+	                    $('#markdown').val(data);
 	                    localStorage.articlekey = value;
-	                    pubsub.publish('articlechange', data.content);
+	                    pubsub.publish('articlechange', data);
 	                });
 	            } else {
 	                $('#markdown').val("#Hello");

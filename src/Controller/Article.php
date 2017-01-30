@@ -8,7 +8,7 @@ class Article
     }
 
     public function actionGet($request, $response, $args) {
-        $categorys = $this->container['pwiki']->getCategory();
-        return $response->withJson($categorys);
+        $article = $this->container['pwiki']->getMarkdownContentByKey($args['articleId']);
+        return $response->write($article);
     }
 }
