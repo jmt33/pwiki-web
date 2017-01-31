@@ -46,8 +46,6 @@
 
 	"use strict";
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -110,7 +108,7 @@
 	                            null,
 	                            React.createElement(
 	                                "button",
-	                                { type: "button", onClick: this.handleClear.bind(this), title: "\u5220\u9664", className: "btn btn-default" },
+	                                { type: "button", onClick: this.handleDelete.bind(this), title: "\u5220\u9664", className: "btn btn-default" },
 	                                React.createElement("span", { className: "glyphicon glyphicon-trash" })
 	                            )
 	                        )
@@ -124,6 +122,22 @@
 	            //暂使用比较low的方式
 	            $('#markdown').val('');
 	            $('#htmlArea div').empty();
+	        }
+	    }, {
+	        key: "handleDelete",
+	        value: function handleDelete(event) {
+	            var $active = $('.sideinfo').find('li.active');
+	            if ($active.length > 0) {
+	                $.ajax({
+	                    url: '/articles/' + $active.attr('data-key'),
+	                    datatype: "json",
+	                    async: false,
+	                    type: 'delete',
+	                    success: function success(data) {
+	                        pubsub.publish('listchange', true);
+	                    }
+	                });
+	            }
 	        }
 	    }, {
 	        key: "handleWrite",
@@ -156,8 +170,10 @@
 	                if (this.state && this.state.time) {
 	                    data.time = this.state.time;
 	                }
-	                $.post('/api.php?action=sync', data, function (data) {
-	                    _this.setState({ key: data });
+	                $.post('/articles/' + data.time, data, function (data) {
+	                    _this.setState({
+	                        key: data.key
+	                    });
 	                    pubsub.publish('listchange', true);
 	                });
 	            } else {
@@ -222,8 +238,11 @@
 	    }, {
 	        key: "handleChange",
 	        value: function handleChange(event) {
-	            $(event.target).addClass('active').siblings('li').removeClass('active');
-	            this.fetchArticle(event.target.getAttribute('data-id'));
+	            var _target = $(event.target);
+	            if (!_target.hasClass('active')) {
+	                $(event.target).addClass('active').siblings('li').removeClass('active');
+	                this.fetchArticle(event.target.getAttribute('data-id'));
+	            }
 	        }
 	    }, {
 	        key: "articleChange",
@@ -253,7 +272,6 @@
 	                type: 'get',
 	                success: function success(data) {
 	                    var items = [];
-	                    console.log(typeof data === "undefined" ? "undefined" : _typeof(data));
 	                    data.forEach(function (value) {
 	                        items.push(React.createElement(
 	                            "li",

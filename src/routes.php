@@ -27,4 +27,14 @@ $app->get('/articles/{articleId}', function($request, $response, $args) {
     return $controller->actionGet($request, $response, $args);
 });
 
+$app->post('/articles[/{articleId}]', function($request, $response, $args) {
+    $controller = new Article($this);
+    return $controller->actionPost($request, $response, $args);
+});
+
+$app->delete('/articles[/{articleId}]', function($request, $response, $args) {
+    $controller = new Article($this);
+    return $controller->actionDelete($request, $response, $args);
+});
+
 //$app->get('/categorys', 'Category:actionGet');

@@ -21,7 +21,7 @@ class Header extends React.Component {
                             </button>
                         </li>
                         <li>
-                            <button type="button" onClick = {this.handleClear.bind(this)} title="删除" className="btn btn-default">
+                            <button type="button" onClick = {this.handleDelete.bind(this)} title="删除" className="btn btn-default">
                                 <span className="glyphicon glyphicon-trash"></span>
                             </button>
                         </li>
@@ -35,6 +35,21 @@ class Header extends React.Component {
         //暂使用比较low的方式
         $('#markdown').val('');
         $('#htmlArea div').empty();
+    }
+
+    handleDelete(event) {
+        var $active = $('.sideinfo').find('li.active');
+        if ($active.length > 0) {
+            $.ajax({
+                url: '/articles/' + $active.attr('data-key'),
+                datatype: "json",
+                async: false,
+                type: 'delete',
+                success: function (data) {
+                    pubsub.publish('listchange', true);
+                }
+            });
+        }
     }
 
     handleWrite(event) {
@@ -65,8 +80,12 @@ class Header extends React.Component {
             if (this.state && this.state.time) {
                 data.time = this.state.time;
             }
-            $.post('/api.php?action=sync', data, function(data) {
-                _this.setState({key: data});
+            $.post('/articles/' + data.time, data, function(data) {
+                _this.setState(
+                    {
+                        key: data.key
+                    }
+                );
                 pubsub.publish('listchange', true);
             });
         } else {
@@ -117,8 +136,11 @@ class Category extends React.Component {
     }
 
     handleChange(event) {
-        $(event.target).addClass('active').siblings('li').removeClass('active');
-        this.fetchArticle(event.target.getAttribute('data-id'));
+        var _target = $(event.target);
+        if (!_target.hasClass('active')) {
+            $(event.target).addClass('active').siblings('li').removeClass('active');
+            this.fetchArticle(event.target.getAttribute('data-id'));
+        }
     }
 
     articleChange(event) {
@@ -146,7 +168,6 @@ class Category extends React.Component {
             type: 'get',
             success: function (data) {
                 var items = [];
-                console.log(typeof data);
                 data.forEach(function(value) {
                     items.push(<li data-key={value['key']} onClick={_this.articleChange.bind(_this)}>{value['title']}</li>);
                 });
