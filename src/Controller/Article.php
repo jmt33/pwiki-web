@@ -16,7 +16,6 @@ class Article
         if (isset($args['articleId'])) {
             $parsedBody = $request->getParsedBody();
             $result = $this->container['pwiki']->putMarkdownContent(
-                $parsedBody['category'],
                 $args['articleId'],
                 $parsedBody['title'],
                 $parsedBody['content']
